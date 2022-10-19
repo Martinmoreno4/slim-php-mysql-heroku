@@ -25,7 +25,7 @@ $dotenv->safeLoad();
 $app = AppFactory::create();
 
 // Set base path
-$app->setBasePath('Prog3/slim-php-mysql-heroku/app');
+$app->setBasePath('/app');
 
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
