@@ -1,19 +1,18 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\ServerRequestInterface as RequestHandler;
-use Slim\Factory\AppFactory;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 
-class Logger
+class EntradaMiddleWare
 {
-    public static function LogOperacion(Request $request, RequestHandler $handler)
+    public function __invoke(Request $request, RequestHandler $handler): Response
     {
         $response = $handler->handle($request);
         $existingContent = (string) $response->getBody();
 
         $response = new Response();
-        $respnse->getBody()->write('BEFORE' . $existingContent);
+        $response->getBody()->write('Antes!' . $existingContent);
 
         return $response;
     }

@@ -13,7 +13,8 @@ use Slim\Routing\RouteContext;
 require __DIR__ . '/../vendor/autoload.php';
 
 require_once './db/AccesoDatos.php';
-// require_once './middlewares/Logger.php';
+require_once './middlewares/EntradaMiddleware.php';
+require_once './middlewares/SalidaMiddleware.php';
 
 require_once './controllers/UsuarioController.php';
 
@@ -25,7 +26,7 @@ $dotenv->safeLoad();
 $app = AppFactory::create();
 
 // Set base path
-$app->setBasePath('/app');
+$app->setBasePath('/prog3/slim-php-mysql-heroku/app');
 
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
@@ -34,16 +35,20 @@ $app->addErrorMiddleware(true, true, true);
 $app->addBodyParsingMiddleware();
 
 // Routes
-$app->group('/usuarios', function (RouteCollectorProxy $group) {
+$app->post('/login', \LoginController::class . ':VerificarLogueo');
+
+$app->group('/usuarios', function (RouteCollectorProxy $group) 
+  {
     $group->get('[/]', \UsuarioController::class . ':TraerTodos');
     $group->get('/{usuario}', \UsuarioController::class . ':TraerUno');
     $group->post('[/]', \UsuarioController::class . ':CargarUno');
-  });
+  })->add(new SalidaMiddleWare())->add(new EntradaMiddleWare());
 
 $app->get('[/]', function (Request $request, Response $response) {    
-    $response->getBody()->write("Slim Framework 4 PHP");
+    $response->getBody()->write("Slim Framework 4 PHP, programacion 3");
     return $response;
 
-});
+})->add(new EntradaMiddleWare())->add(new SalidaMiddleWare());
 
+$app->add(new EntradaMiddleWare());
 $app->run();
